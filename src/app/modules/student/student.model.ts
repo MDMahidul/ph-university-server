@@ -8,13 +8,13 @@ import {
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
-    String,
+    type:String,
     required: true,
     trim: true,
     maxlength: 20,
   },
-  middleName: { String, trim: true },
-  lastName: { String, required: true },
+  middleName: { type:String, trim: true },
+  lastName: { type:String, required: true , maxlength: 20,},
 });
 
 const guardianSchema = new Schema<TGuardian>({
@@ -72,14 +72,14 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
 //main schema
 const studentSchema = new Schema<TStudent>(
   {
-    id: { type: String, required: true, unique: true },
+    id: { type: String, required: [true, "ID is required"], unique: true },
     user: {
       type: Schema.Types.ObjectId,
-      required: true,
+      required: [true, "User id is required"],
       unique: true,
-      ref: "User",
+      ref: 'User',
     },
-    name: { type: userNameSchema, required: true },
+    name: { type: userNameSchema, required: [true, "User name is required"] },
     gender: {
       type: String,
       enum: {
@@ -87,24 +87,24 @@ const studentSchema = new Schema<TStudent>(
         message:
           "The gender field can only be one of the following: 'male', 'female', 'others'",
       },
-      required: true,
+      required: [true, "Gender is required"],
     },
-    dateOfBirth: { type: String, required: true },
+    dateOfBirth: { type: String, required: [true, "DOB is required"] },
     email: {
       type: String,
       trim: true,
-      required: true,
+      required: [true, "email is required"],
       unique: true,
     },
     contactNo: {
       type: String,
       trim: true,
-      required: true,
+      required: [true, "contact is required"],
     },
     emergencyContactNo: {
       type: String,
       trim: true,
-      required: true,
+      required: [true, "em contact is required"],
     },
     bloodGroup: {
       type: String,
@@ -113,17 +113,17 @@ const studentSchema = new Schema<TStudent>(
     presentAddress: {
       type: String,
       trim: true,
-      required: true,
+      required: [true, "P.Address is required"],
     },
-    parmanentAddress: {
+    permanentAddress: {
       type: String,
       trim: true,
-      required: true,
+      required: [true, "Par.Address is required"],
     },
-    guardian: { type: guardianSchema, required: true },
+    guardian: { type: guardianSchema, required: [true, "Gurdian is required"] },
     localGuardian: {
       type: localGuardianSchema,
-      required: true,
+      required: [true, "LG is required"],
     },
     profileImage: { type: String },
     isDeleted: {

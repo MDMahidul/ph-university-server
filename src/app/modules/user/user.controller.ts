@@ -1,29 +1,18 @@
-import { NextFunction, Request, Response } from "express";
-//import studentValidationSchema from "../student/student.validation";
 import { UserServices } from "./user.service";
 import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
+import catchAsync from "../../utils/catchAsync";
 
-const createStudent = async (req: Request, res: Response,next:NextFunction) => {
-  try {
-    const { password, student: studentData } = req.body;
-    //zod validation check
-    //const zodparseData = studentValidationSchema.parse(studentData)
+const createStudent = catchAsync(async (req, res) => {
+  const { password, student: studentData } = req.body;
+  const result = await UserServices.createStudentIntoDB(password, studentData);
 
-    const result = await UserServices.createStudentIntoDB(
-      password,
-      studentData
-    );
-
-    sendResponse(res,{
-      success: true,
-      statusCode:httpStatus.OK,
-      message: "Student created successfully!",
-      data: result,
-    });
-  } catch (err) {
-    next(err)
-  }
-};
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Student created successfully!",
+    data: result,
+  });
+});
 
 export const UserControllers = { createStudent };

@@ -13,25 +13,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserControllers = void 0;
-//import studentValidationSchema from "../student/student.validation";
 const user_service_1 = require("./user.service");
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const http_status_1 = __importDefault(require("http-status"));
-const createStudent = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { password, student: studentData } = req.body;
-        //zod validation check
-        //const zodparseData = studentValidationSchema.parse(studentData)
-        const result = yield user_service_1.UserServices.createStudentIntoDB(password, studentData);
-        (0, sendResponse_1.default)(res, {
-            success: true,
-            statusCode: http_status_1.default.OK,
-            message: "Student created successfully!",
-            data: result,
-        });
-    }
-    catch (err) {
-        next(err);
-    }
-});
+const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
+const createStudent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { password, student: studentData } = req.body;
+    const result = yield user_service_1.UserServices.createStudentIntoDB(password, studentData);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: "Student created successfully!",
+        data: result,
+    });
+}));
 exports.UserControllers = { createStudent };

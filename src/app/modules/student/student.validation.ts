@@ -1,6 +1,6 @@
-import {z} from 'zod';
+import { z } from "zod";
 
-const userNameSchemaValidation = z.object({
+const userNameValidationSchema = z.object({
   firstName: z
     .string()
     .nonempty("First name is required")
@@ -15,7 +15,7 @@ const userNameSchemaValidation = z.object({
   lastName: z.string().nonempty("Last name is required"),
 });
 
-const guardianSchemaValidation = z.object({
+const guardianValidationSchema = z.object({
   fatherName: z.string().nonempty("Father name is required"),
   fatherOccupation: z.string().nonempty("Father occupation is required"),
   fatherContactNo: z.string().nonempty("Father contact is required"),
@@ -24,7 +24,7 @@ const guardianSchemaValidation = z.object({
   motherContactNo: z.string().nonempty("Mother contact is required"),
 });
 
-const localGuardianSchemaValidation = z.object({
+const localGuardianValidationSchema = z.object({
   name: z.string().nonempty("LG name is required"),
   occupation: z.string().nonempty("LG occupation is required"),
   contactNo: z.string().nonempty("LG contact is required"),
@@ -32,28 +32,33 @@ const localGuardianSchemaValidation = z.object({
 });
 
 // Main schema: Student
-const studentValidationSchema = z.object({
-  id: z.string(),
-  name: userNameSchemaValidation,
-  gender: z.enum(["male", "female", "others"], {
-    errorMap: () => ({
-      message: "Gender can only be 'male', 'female', or 'others'",
+const createStudentValidationSchema = z.object({
+  body: z.object({
+    password: z.string().max(20),
+    student: z.object({
+      name: userNameValidationSchema,
+      gender: z.enum(["male", "female", "others"], {
+        errorMap: () => ({
+          message: "Gender can only be 'male', 'female', or 'others'",
+        }),
+      }),
+      dateOfBirth: z.string().nonempty("DOB is required"),
+      email: z
+        .string()
+        .nonempty("Email is required")
+        .email("Invalid email format"),
+      contactNo: z.string().nonempty("Contact is required"),
+      emergencyContactNo: z.string().nonempty("Emergency contact is required"),
+      bloodGroup: z
+        .enum(["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"])
+        .optional(),
+      presentAddress: z.string().nonempty("Present address is required"),
+      parmanentAddress: z.string().nonempty("Permanent address is required"),
+      guardian: guardianValidationSchema,
+      localGuardian: localGuardianValidationSchema,
+      profileImage: z.string().optional(),
     }),
   }),
-  dateOfBirth: z.string().nonempty("DOB is required"),
-  email: z.string().nonempty("Email is required").email("Invalid email format"),
-  contactNo: z.string().nonempty("Contact is required"),
-  emergencyContactNo: z.string().nonempty("Emergency contact is required"),
-  bloodGroup: z
-    .enum(["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"])
-    .optional(),
-  presentAddress: z.string().nonempty("Present address is required"),
-  parmanentAddress: z.string().nonempty("Permanent address is required"),
-  guardian: guardianSchemaValidation,
-  localGuardian: localGuardianSchemaValidation,
-  profileImage: z.string().optional(),
-  isActive: z.enum(["active", "blocked"]).default("active"),
-  isDelete: z.boolean(),
 });
 
-export default studentValidationSchema;
+export const studentValidations={createStudentValidationSchema};

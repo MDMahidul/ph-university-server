@@ -80,7 +80,7 @@ const studentSchema = new mongoose_1.Schema({
         },
         required: [true, "Gender is required"],
     },
-    dateOfBirth: { type: String, required: [true, "DOB is required"] },
+    dateOfBirth: { type: Date },
     email: {
         type: String,
         trim: true,

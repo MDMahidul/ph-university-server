@@ -38,7 +38,7 @@ const createStudentValidationSchema = zod_1.z.object({
                     message: "Gender can only be 'male', 'female', or 'others'",
                 }),
             }),
-            dateOfBirth: zod_1.z.string().nonempty("DOB is required"),
+            dateOfBirth: zod_1.z.date().optional(),
             email: zod_1.z
                 .string()
                 .nonempty("Email is required")

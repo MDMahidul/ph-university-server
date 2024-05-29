@@ -42,7 +42,7 @@ const createStudentValidationSchema = z.object({
           message: "Gender can only be 'male', 'female', or 'others'",
         }),
       }),
-      dateOfBirth: z.string().nonempty("DOB is required"),
+      dateOfBirth: z.date().optional(),
       email: z
         .string()
         .nonempty("Email is required")

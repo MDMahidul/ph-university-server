@@ -9,16 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const validateRequest = (schema) => {
-    return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-        try {
-            // zod parse data
-            yield schema.parseAsync({ body: req.body });
-            next();
-        }
-        catch (error) {
-            next(error);
-        }
-    });
+exports.AcademicSemesterServices = void 0;
+const academicSemester_model_1 = require("./academicSemester.model");
+const createAcademicSemesterIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield academicSemester_model_1.AcademicSemester.create(payload);
+    return result;
+});
+exports.AcademicSemesterServices = {
+    createAcademicSemesterIntoDB
 };
-exports.default = validateRequest;

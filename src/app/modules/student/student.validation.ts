@@ -42,7 +42,7 @@ const createStudentValidationSchema = z.object({
           message: "Gender can only be 'male', 'female', or 'others'",
         }),
       }),
-      dateOfBirth: z.date().optional(),
+      dateOfBirth: z.string().optional(),
       email: z
         .string()
         .nonempty("Email is required")
@@ -53,12 +53,13 @@ const createStudentValidationSchema = z.object({
         .enum(["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"])
         .optional(),
       presentAddress: z.string().nonempty("Present address is required"),
-      parmanentAddress: z.string().nonempty("Permanent address is required"),
+      permanentAddress: z.string().nonempty("Permanent address is required"),
       guardian: guardianValidationSchema,
       localGuardian: localGuardianValidationSchema,
       profileImage: z.string().optional(),
+      admissionSemester: z.string(),
     }),
   }),
 });
 
-export const studentValidations={createStudentValidationSchema};
+export const studentValidations = { createStudentValidationSchema };

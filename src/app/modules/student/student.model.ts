@@ -8,13 +8,13 @@ import {
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
-    type:String,
+    type: String,
     required: true,
     trim: true,
     maxlength: 20,
   },
-  middleName: { type:String, trim: true },
-  lastName: { type:String, required: true , maxlength: 20,},
+  middleName: { type: String, trim: true },
+  lastName: { type: String, required: true, maxlength: 20 },
 });
 
 const guardianSchema = new Schema<TGuardian>({
@@ -77,7 +77,7 @@ const studentSchema = new Schema<TStudent>(
       type: Schema.Types.ObjectId,
       required: [true, "User id is required"],
       unique: true,
-      ref: 'User',
+      ref: "User",
     },
     name: { type: userNameSchema, required: [true, "User name is required"] },
     gender: {
@@ -89,7 +89,7 @@ const studentSchema = new Schema<TStudent>(
       },
       required: [true, "Gender is required"],
     },
-    dateOfBirth: { type: Date},
+    dateOfBirth: { type: Date },
     email: {
       type: String,
       trim: true,
@@ -126,6 +126,10 @@ const studentSchema = new Schema<TStudent>(
       required: [true, "LG is required"],
     },
     profileImage: { type: String },
+    admissionSemester: {
+      type: Schema.Types.ObjectId,
+      ref: "AcademicSemester",
+    },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -138,6 +142,5 @@ const studentSchema = new Schema<TStudent>(
   }
 );
 
-
 // 3. Create a Model.
-export const Student = model<TStudent>('Student', studentSchema);
+export const Student = model<TStudent>("Student", studentSchema);

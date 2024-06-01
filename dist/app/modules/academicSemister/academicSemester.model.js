@@ -26,7 +26,7 @@ academicSemesterSchema.pre("save", function name(next) {
             name: this.name,
         });
         if (isSemesterExists) {
-            throw new Error("Semester is already exists!");
+            throw new Appe("Semester is already exists!");
         }
         next();
     });

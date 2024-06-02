@@ -146,5 +146,15 @@ const studentSchema = new Schema<TStudent>(
   }
 );
 
+// create query middleware
+studentSchema.pre("find", function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+studentSchema.pre("findOne", function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
 // 3. Create a Model.
 export const Student = model<TStudent>("Student", studentSchema);

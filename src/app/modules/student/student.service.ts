@@ -3,6 +3,7 @@ import AppError from "../../errors/Apperror";
 import { User } from "../user/user.model";
 import { Student } from "./student.model";
 import mongoose from "mongoose";
+import { TStudent } from "./student.interface";
 
 const getAllStudentsFromDB = async () => {
   const result = await Student.find()
@@ -26,6 +27,38 @@ const getSingleStudentFromDB = async (id: string) => {
         path: "academicFaculty",
       },
     });
+
+  return result;
+};
+const updateStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {
+  // get the non primitive data
+  const { name, guardian, localGuardian, ...remainingStudentData } = payload;
+
+  // create a new object initialized with the remaining properties
+  const modifiedUpdatedData: Record<string, unknown> = {
+    ...remainingStudentData,
+  };
+
+  // handle nested objects
+  if (name && Object.keys(name).length) {
+    for (const [key, value] of Object.entries(name)) {
+      modifiedUpdatedData[`name.${key}`] = value;
+    }
+  }
+
+  if (guardian && Object.keys(guardian).length) {
+    for (const [key, value] of Object.entries(guardian)) {
+      modifiedUpdatedData[`guardian.${key}`] = value;
+    }
+  }
+
+  if (localGuardian && Object.keys(localGuardian).length) {
+    for (const [key, value] of Object.entries(localGuardian)) {
+      modifiedUpdatedData[`localGuardian.${key}`] = value;
+    }
+  }
+
+  const result = await Student.findOneAndUpdate({ id }, modifiedUpdatedData,{new:true,runValidators:true});
 
   return result;
 };
@@ -55,20 +88,21 @@ const deleteSingleStudentFromDB = async (id: string) => {
       { isDeleted: true },
       { new: true, session }
     );
-     if (!deleteUser) {
-       throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete user!");
-     }
+    if (!deleteUser) {
+      throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete user!");
+    }
 
-     // commit transaction if successed
-     await session.commitTransaction();
-     // end session if successed
-     await session.endSession();
+    // commit transaction if successed
+    await session.commitTransaction();
+    // end session if successed
+    await session.endSession();
     return deletedStudent;
   } catch (error) {
     // abort transaction if failed
     await session.abortTransaction();
     // end session if successed
     await session.endSession();
+    throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete student");
   }
 };
 
@@ -76,4 +110,5 @@ export const StudentServices = {
   getAllStudentsFromDB,
   getSingleStudentFromDB,
   deleteSingleStudentFromDB,
+  updateStudentIntoDB,
 };

@@ -28,6 +28,10 @@ const getSingleStudentFromDB = async (id: string) => {
       },
     });
 
+    if(!result){
+      throw new AppError(httpStatus.NOT_FOUND,'Invalid Student ID!')
+    }
+
   return result;
 };
 const updateStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {

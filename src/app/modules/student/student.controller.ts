@@ -1,11 +1,11 @@
-import { NextFunction, Request, Response } from "express";
+import { RequestHandler } from "express";
 import { StudentServices } from "./student.service";
 import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 
-const getAllStudents = catchAsync(async (req, res) => {
-  const result = await StudentServices.getAllStudentsFromDB();
+const getAllStudents: RequestHandler = catchAsync(async (req, res) => {
+  const result = await StudentServices.getAllStudentsFromDB(req.query);
 
   sendResponse(res, {
     success: true,
@@ -29,7 +29,7 @@ const getSingleStudent = catchAsync(async (req, res) => {
 const updateStudent = catchAsync(async (req, res) => {
   const { studentId } = req.params;
   const { student } = req.body;
-  const result = await StudentServices.updateStudentIntoDB(studentId,student);
+  const result = await StudentServices.updateStudentIntoDB(studentId, student);
 
   sendResponse(res, {
     success: true,

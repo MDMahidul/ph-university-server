@@ -12,7 +12,7 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
 
   const studentSearchableField = ["email", "name.firstName", "presentAddress"];
 
-  let searchTerm = ""; // deafult null
+  let searchTerm = ""; // default null
 
   if (query?.searchTerm) {
     searchTerm = query?.searchTerm as string;
@@ -26,11 +26,20 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   });
 
   // fitering query
-  const excludeFields = ["searchTerm", "sort", "limit"];
+  const excludeFields = [
+    "searchTerm",
+    "sort",
+    "limit",
+    "page",
+    "limit",
+    "fields",
+  ];
+
   // excluding item from query
   excludeFields.forEach((el) => delete queryObj[el]);
 
-  const filterQuery = searchQuery.find()
+  const filterQuery = searchQuery
+    .find()
     .populate("admissionSemester")
     .populate({
       path: "academicDepartment",
@@ -39,22 +48,46 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
       },
     });
 
-    // sorting data
-    let sort='createdAt' // default sorting prop
-    if(query.sort){
-      sort = query.sort as string;
-    }
-    // sorting using chanining method
-    const sortQuery = filterQuery.sort(sort);
+  // sorting data
+  let sort = "createdAt"; // default sorting prop
+  if (query.sort) {
+    sort = query.sort as string;
+  }
+  // sorting using chanining method
+  const sortQuery = filterQuery.sort(sort);
 
-    // set limit filterinf
-    let limit=1;
-    if (query.limit) {
-      limit = query.limit as number;
-    }
-    const limitQuery = filterQuery.limit(limit);
+  // set limit and page filtering
+  let page = 1;
+  let limit = 1;
+  let skip = 0;
 
-  return limitQuery;
+  if (query.limit) {
+    limit = Number(query.limit);
+  }
+
+  if (query.page) {
+    page = Number(query.page);
+    skip = (page - 1) * limit;
+  }
+
+  // set pagination filtering
+  const paginationQuery = sortQuery.skip(skip);
+
+  const limitQuery = paginationQuery.limit(limit);
+
+  // field limiting
+
+  //fields: "name,email"; // WE ARE ACCEPTING FROM REQUEST
+  //fields: "name email"; // HOW IT SHOULD BE
+  let fields = "-__v";
+  //formating fields value
+  if (query.fields) {
+    fields = (query.fields as string).split(",").join(" ");
+  }
+
+  const fieldQuery = await limitQuery.select(fields);
+
+  return fieldQuery;
 };
 
 const getSingleStudentFromDB = async (id: string) => {
@@ -73,6 +106,7 @@ const getSingleStudentFromDB = async (id: string) => {
 
   return result;
 };
+
 const updateStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {
   // get the non primitive data
   const { name, guardian, localGuardian, ...remainingStudentData } = payload;

@@ -1,12 +1,17 @@
-import express from 'express';
-import { UserControllers } from './user.controller';
-import validateRequest from '../../middlewares/validationRequest';
-import { studentValidations } from '../student/student.validation';
-import { facultyValidations } from '../faculty/faculty.validation';
+import express from "express";
+import { UserControllers } from "./user.controller";
+import validateRequest from "../../middlewares/validationRequest";
+import { studentValidations } from "../student/student.validation";
+import { facultyValidations } from "../faculty/faculty.validation";
+import { adminValidations } from "../admin/admin.validation";
 
-const router=express.Router();
+const router = express.Router();
 
-router.post('/create-student',validateRequest(studentValidations.createStudentValidationSchema),UserControllers.createStudent);
+router.post(
+  "/create-student",
+  validateRequest(studentValidations.createStudentValidationSchema),
+  UserControllers.createStudent
+);
 
 router.post(
   "/create-faculty",
@@ -14,4 +19,10 @@ router.post(
   UserControllers.createFaculty
 );
 
-export const UserRoutes=router;
+router.post(
+  "/create-admin",
+  validateRequest(adminValidations.createAdminValidationSchema),
+  UserControllers.createAdmin
+);
+
+export const UserRoutes = router;

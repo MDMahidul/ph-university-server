@@ -1,11 +1,21 @@
 import { Types } from "mongoose";
 
+export type TUserName = {
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+};
+export type TGender = "male" | "female" | "others";
 
-export type TUserName={
-    firstName: string;
-    middleName?:string;
-    lastName:string;
-}
+export type TBloodGroup =
+  | "A+"
+  | "A-"
+  | "B+"
+  | "B-"
+  | "O+"
+  | "O-"
+  | "AB+"
+  | "AB-";
 
 export type TGuardian = {
   fatherName: string;
@@ -28,18 +38,18 @@ export type TStudent = {
   user: Types.ObjectId;
   password: string;
   name: TUserName;
-  gender: "male" | "female" | "others";
+  gender: TGender;
   dateOfBirth: Date;
   email: string;
   contactNo: string;
   emergencyContactNo: string;
-  bloodGroup?: "A+" | "A-" | "B+" | "B-" | "O+" | "O-" | "AB+" | "AB-";
+  bloodGroup?: TBloodGroup;
   presentAddress: string;
   permanentAddress: string;
   guardian: TGuardian;
   localGuardian: TLocalGuardian;
   profileImage?: string;
   admissionSemester: Types.ObjectId;
-  academicDepartment:Types.ObjectId;
+  academicDepartment: Types.ObjectId;
   isDeleted: boolean;
 };

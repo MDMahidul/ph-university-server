@@ -64,11 +64,11 @@ const facultySchema = new Schema<TFaculty, FacultyModel>(
       required: [true, 'Permanent address is required'],
     },
     profileImage: { type: String },
-    academicFaculty: {
+   /*  academicFaculty: {
       type: Schema.Types.ObjectId,
       required: [true, 'Academic Faculty is required!'],
       ref: 'AcademicFaculty',
-    },
+    }, */
     academicDepartment: {
       type: Schema.Types.ObjectId,
       required: [true, 'Academic department is required!'],

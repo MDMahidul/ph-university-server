@@ -116,7 +116,72 @@ const updateSemesterRegistrationIntoDB = async (
      return result;
 };
 
-const deleteSemesterRegistrationFromDB = async (id: string) => {};
+const deleteSemesterRegistrationFromDB = async (id: string) => {
+  //step 1: delete associated offered courses
+  //step 2: delete semester registration when the status is upcoming
+
+  // check if the semester registration is exist
+  const isSemesterRegistrationExists = await SemesterRegistration.findById(id);
+
+  if (!isSemesterRegistrationExists) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      "This registered semester is not found !"
+    );
+  }
+
+  // check if the status is still "UPCOMING"
+  const semesterRegistrationStatus = isSemesterRegistrationExists.status;
+
+  if (semesterRegistrationStatus !== "UPCOMING") {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `You can not update as the registered semester is ${semesterRegistrationStatus}`
+    );
+  }
+
+  //create session
+  const session = await mongoose.startSession();
+
+  // delete associated offered course
+  try {
+    session.startTransaction();
+
+    const deletedOfferedCourse = await OfferedCourse.deleteMany(
+      {
+        semesterRegistration: id,
+      },
+      { session }
+    );
+
+    if (!deletedOfferedCourse) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        "Failed to delete semester registration !"
+      );
+    }
+
+    // delete semester registration
+    const deletedSemesterRegistration =
+      await SemesterRegistration.findByIdAndDelete(id, { session, new: true });
+
+    if (!deletedSemesterRegistration) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        "Failed to delete semester registration !"
+      );
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return null;
+  } catch (err: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(err);
+  }
+};
 
 export const SemesterRegistrationService = {
   createSemesterRegistrationIntoDB,

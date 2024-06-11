@@ -1,13 +1,35 @@
-import httpStatus from 'http-status';
-import { SemesterRegistration } from '../semesterRegistration/semesterRegistration.model';
-import { TOfferedCourse } from './offeredCourse.interface';
-import { OfferedCourse } from './offeredCourse.model';
-import { AcademicFaculty } from '../academicFaculty/academicFaculty.model';
-import { AcademicDepartment } from '../academicDepartment/academicDepartment.model';
-import { Course } from '../course/course.model';
-import { Faculty } from '../faculty/faculty.model';
-import AppError from '../../errors/Apperror';
-import { hasTimeConflict } from './offeredCourse.utlis';
+import httpStatus from "http-status";
+import { SemesterRegistration } from "../semesterRegistration/semesterRegistration.model";
+import { TOfferedCourse } from "./offeredCourse.interface";
+import { OfferedCourse } from "./offeredCourse.model";
+import { AcademicFaculty } from "../academicFaculty/academicFaculty.model";
+import { AcademicDepartment } from "../academicDepartment/academicDepartment.model";
+import { Course } from "../course/course.model";
+import { Faculty } from "../faculty/faculty.model";
+import AppError from "../../errors/Apperror";
+import { hasTimeConflict } from "./offeredCourse.utlis";
+import QueryBuilder from "../../builder/QueryBuilder";
+
+const getAllOfferedCoursesFromDB = async (query: Record<string, unknown>) => {
+  const offeredCourseQuery = new QueryBuilder(OfferedCourse.find(), query)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await offeredCourseQuery.modelQuery;
+  return result;
+};
+
+const getSingleOfferedCourseFromDB = async (id: string) => {
+  const offeredCourse = await OfferedCourse.findById(id);
+
+  if (!offeredCourse) {
+    throw new AppError(httpStatus.NOT_FOUND, "Offered Course not found");
+  }
+
+  return offeredCourse;
+};
 
 const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   //check if the semester registration id exists
@@ -170,8 +192,37 @@ const updateOfferedCourseIntoDB = async (
   });
 };
 
+const deleteOfferedCourseFromDB = async (id: string) => {
+  // check if offered course exists
+  const isOfferedCourseExists = await OfferedCourse.findById(id);
+
+  if (!isOfferedCourseExists) {
+    throw new AppError(httpStatus.NOT_FOUND, "Offered Course not found");
+  }
+
+  // check if the semester registration status is upcoming
+  const semesterRegistration = isOfferedCourseExists.semesterRegistration;
+
+  const semesterRegistrationStatus =
+    await SemesterRegistration.findById(semesterRegistration).select("status");
+
+  if (semesterRegistrationStatus?.status !== "UPCOMING") {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `Offered course can not update ! because the semester ${semesterRegistrationStatus}`
+    );
+  }
+
+  const result = await OfferedCourse.findByIdAndDelete(id);
+
+  return result;
+};
+
 
 export const OfferedCourseServices = {
   createOfferedCourseIntoDB,
   updateOfferedCourseIntoDB,
+  getAllOfferedCoursesFromDB,
+  getSingleOfferedCourseFromDB,
+  deleteOfferedCourseFromDB,
 };

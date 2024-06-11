@@ -7,6 +7,7 @@ import { AcademicDepartment } from '../academicDepartment/academicDepartment.mod
 import { Course } from '../course/course.model';
 import { Faculty } from '../faculty/faculty.model';
 import AppError from '../../errors/Apperror';
+import { hasTimeConflict } from './offeredCourse.utlis';
 
 const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   //check if the semester registration id exists
@@ -17,6 +18,9 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
     course,
     faculty,
     section,
+    days,
+    startTime,
+    endTime,
   } = payload;
 
   const isSemesterRegistrationExists =
@@ -25,7 +29,7 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   if (!isSemesterRegistrationExists) {
     throw new AppError(
       httpStatus.NOT_FOUND,
-      'Semester registration not found!',
+      "Semester registration not found!"
     );
   }
 
@@ -35,26 +39,26 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
     await AcademicFaculty.findById(academicFaculty);
 
   if (!isAcademicFacultyExists) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Academic Faculty not found!');
+    throw new AppError(httpStatus.NOT_FOUND, "Academic Faculty not found!");
   }
 
   const isAcademicDepartmentExists =
     await AcademicDepartment.findById(academicDepartment);
 
   if (!isAcademicDepartmentExists) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Academic Department not found!');
+    throw new AppError(httpStatus.NOT_FOUND, "Academic Department not found!");
   }
 
   const isCourseExists = await Course.findById(course);
 
   if (!isCourseExists) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Course not found!');
+    throw new AppError(httpStatus.NOT_FOUND, "Course not found!");
   }
 
   const isFacultyExists = await Faculty.findById(faculty);
 
   if (!isFacultyExists) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Faculty not found!');
+    throw new AppError(httpStatus.NOT_FOUND, "Faculty not found!");
   }
 
   //check if the department is belog to the faculty
@@ -66,7 +70,7 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   if (!isDepartmentBelongToFaculty) {
     throw new AppError(
       httpStatus.NOT_FOUND,
-      `This ${isAcademicDepartmentExists.name} is not belog to this ${isAcademicFacultyExists.name}`,
+      `This ${isAcademicDepartmentExists.name} is not belog to this ${isAcademicFacultyExists.name}`
     );
   }
 
@@ -81,7 +85,29 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   if (isSameOfferedCourseExistsWithSameRegisteredSemesterWithSameSection) {
     throw new AppError(
       httpStatus.NOT_FOUND,
-      `Offered course with same section is already exists!`,
+      `Offered course with same section is already exists!`
+    );
+  }
+
+  // get the schedules of the faculties
+  const assignedSchedules = await OfferedCourse.find({
+    semesterRegistration,
+    faculty,
+    days: { $in: days },
+  }).select("days startTime endTime");
+
+  console.log(assignedSchedules);
+
+  const newSchedule = {
+    days,
+    startTime,
+    endTime,
+  };
+
+  if (hasTimeConflict(assignedSchedules, newSchedule)) {
+    throw new AppError(
+      httpStatus.CONFLICT,
+      `This faculty is not available at that time, Choose other time or day!`
     );
   }
 

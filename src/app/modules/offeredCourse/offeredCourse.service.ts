@@ -1,0 +1,95 @@
+import httpStatus from 'http-status';
+import { SemesterRegistration } from '../semesterRegistration/semesterRegistration.model';
+import { TOfferedCourse } from './offeredCourse.interface';
+import { OfferedCourse } from './offeredCourse.model';
+import { AcademicFaculty } from '../academicFaculty/academicFaculty.model';
+import { AcademicDepartment } from '../academicDepartment/academicDepartment.model';
+import { Course } from '../course/course.model';
+import { Faculty } from '../faculty/faculty.model';
+import AppError from '../../errors/Apperror';
+
+const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
+  //check if the semester registration id exists
+  const {
+    semesterRegistration,
+    academicFaculty,
+    academicDepartment,
+    course,
+    faculty,
+    section,
+  } = payload;
+
+  const isSemesterRegistrationExists =
+    await SemesterRegistration.findById(semesterRegistration);
+
+  if (!isSemesterRegistrationExists) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'Semester registration not found!',
+    );
+  }
+
+  const academicSemester = isSemesterRegistrationExists.academicSemester;
+
+  const isAcademicFacultyExists =
+    await AcademicFaculty.findById(academicFaculty);
+
+  if (!isAcademicFacultyExists) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Academic Faculty not found!');
+  }
+
+  const isAcademicDepartmentExists =
+    await AcademicDepartment.findById(academicDepartment);
+
+  if (!isAcademicDepartmentExists) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Academic Department not found!');
+  }
+
+  const isCourseExists = await Course.findById(course);
+
+  if (!isCourseExists) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Course not found!');
+  }
+
+  const isFacultyExists = await Faculty.findById(faculty);
+
+  if (!isFacultyExists) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Faculty not found!');
+  }
+
+  //check if the department is belog to the faculty
+  const isDepartmentBelongToFaculty = await AcademicDepartment.findOne({
+    _id: academicDepartment,
+    academicFaculty,
+  });
+
+  if (!isDepartmentBelongToFaculty) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      `This ${isAcademicDepartmentExists.name} is not belog to this ${isAcademicFacultyExists.name}`,
+    );
+  }
+
+  // check if the same offered course same section in same registered semester exists
+  const isSameOfferedCourseExistsWithSameRegisteredSemesterWithSameSection =
+    await OfferedCourse.findOne({
+      semesterRegistration,
+      course,
+      section,
+    });
+
+  if (isSameOfferedCourseExistsWithSameRegisteredSemesterWithSameSection) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      `Offered course with same section is already exists!`,
+    );
+  }
+
+  const result = await OfferedCourse.create({ ...payload, academicSemester });
+
+  return result;
+};
+
+export const OfferedCourseServices = {
+  createOfferedCourseIntoDB,
+};

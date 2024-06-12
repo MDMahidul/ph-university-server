@@ -1,3 +1,5 @@
+import { Model } from "mongoose";
+
 export type TUser = {
   id: string;
   password: string;
@@ -6,3 +8,10 @@ export type TUser = {
   status: "in-progress" | "blocked";
   isDeleted: boolean;
 };
+
+// function defination
+export interface UserModel extends Model<TUser> {
+  isUserExistsByCustomId(id: string): Promise<TUser>;
+  
+  isPasswordMatched(palinTextPassword:string, hashedPassword:string): Promise<boolean>;
+}

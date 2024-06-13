@@ -3,7 +3,7 @@ import { TUser, UserModel } from "./user.interface";
 import bcrypt from "bcrypt";
 import config from "../../config";
 
-export const userSchema = new Schema<TUser>(
+export const userSchema = new Schema<TUser, UserModel>(
   {
     id: {
       type: String,
@@ -19,7 +19,7 @@ export const userSchema = new Schema<TUser>(
       type: Boolean,
       default: true,
     },
-    passwordChnagedAt: { type: Date },
+    passwordChangedAt: { type: Date },
     role: {
       type: String,
       enum: ["admin", "student", "faculty"],
@@ -59,14 +59,14 @@ userSchema.post("save", function (doc, next) {
 
 // create static function
 userSchema.statics.isUserExistsByCustomId = async function (id: string) {
-  return await User.findOne({ id });
+  return await User.findOne({ id }).select("+password");
 };
 
 userSchema.statics.isPasswordMatched = async function (
-  palinTextPassword,
+  plainTextPassword,
   hashedPassword
 ) {
-  return await bcrypt.compare(palinTextPassword, hashedPassword);
+  return await bcrypt.compare(plainTextPassword, hashedPassword);
 };
 
 userSchema.statics.isJWTIssuedBeforePasswordChange = function (

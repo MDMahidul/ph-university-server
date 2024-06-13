@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import config from "../../config";
-import { AcademicSemester } from "../academicSemister/academicSemester.model";
 import { TStudent } from "../student/student.interface";
 import { Student } from "../student/student.model";
 import { TUser } from "./user.interface";
@@ -10,19 +9,20 @@ import {
   generateFacultyId,
   generateStudentId,
 } from "./user.utils";
-import AppError from "../../errors/Apperror";
+import AppError from "../../errors/AppError";
 import httpStatus from "http-status";
-import { Faculty } from "../faculty/faculty.model";
 import { TFaculty } from "../faculty/faculty.interface";
 import { AcademicDepartment } from "../academicDepartment/academicDepartment.model";
 import { AcademicFaculty } from "../academicFaculty/academicFaculty.model";
+import { Faculty } from "../faculty/faculty.model";
 import { Admin } from "../admin/admin.model";
+import { AcademicSemester } from "../academicSemister/academicSemester.model";
 
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
-  // create a user object using partial
+  // create a user object
   const userData: Partial<TUser> = {};
 
-  // check if password is given or not, if not use default pass
+  // if password is not give use default password
   userData.password = password || (config.default_password as string);
 
   // set student role
@@ -34,42 +34,42 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   );
 
   // implement transaction
-  // step 1: create session
+  //setp 1: create session
   const session = await mongoose.startSession();
   try {
-    // step 2: start transaction
-    await session.startTransaction();
+    //step 2: start transaction
+    session.startTransaction();
 
-    // set generate id
+    // set generated id
     userData.id = await generateStudentId(admissionSemester);
 
-    // create a user transaction
+    //create a user (transaction-1)
     const newUser = await User.create([userData], { session }); //array
 
+    //create a user
     if (!newUser.length) {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to create user!");
     }
-    // set id, _id as user
+    //set id, _id as user
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id; // reference _id
 
-    // create student (transaction - 2)
+    //create a user (transaction-2)
     const newStudent = await Student.create([payload], { session });
 
     if (!newStudent.length) {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to create student!");
     }
-    // step 3: commit transaction if transaction successed
+    // step 3: commit session if success
     await session.commitTransaction();
 
-    // step 4: end session if successed
+    // step 4: end session if success
     await session.endSession();
 
     return newStudent;
   } catch (error) {
-    // step 3: abort transaction if error happend
+    //step 3: abbort session if error happend
     await session.abortTransaction();
-
     //step 4: end session
     await session.endSession();
     throw new AppError(httpStatus.BAD_REQUEST, "Failed to create student");
@@ -97,11 +97,11 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
 
   // find academic faculty info
   /*  const academicFaculty = await AcademicFaculty.findById(
-    payload.academicFaculty
+    payload.academicFaculty,
   );
 
   if (!academicFaculty) {
-    throw new AppError(400, "Academic faculty not found");
+    throw new AppError(400, 'Academic faculty not found');
   } */
 
   // create session

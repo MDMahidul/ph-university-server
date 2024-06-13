@@ -47,9 +47,9 @@ const auth = (...requiredRoles: TUserRole[]) => {
 
     //check if the password changed before the token generated
     if (
-      user.passwordChnagedAt &&
+      user.passwordChangedAt &&
       User.isJWTIssuedBeforePasswordChange(
-        user.passwordChnagedAt,
+        user.passwordChangedAt,
         iat as number
       )
     ) {

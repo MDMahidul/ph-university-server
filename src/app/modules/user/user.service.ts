@@ -5,7 +5,11 @@ import { TStudent } from "../student/student.interface";
 import { Student } from "../student/student.model";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
-import { generateAdminId, generateFacultyId, generateStudentId } from "./user.utils";
+import {
+  generateAdminId,
+  generateFacultyId,
+  generateStudentId,
+} from "./user.utils";
 import AppError from "../../errors/Apperror";
 import httpStatus from "http-status";
 import { Faculty } from "../faculty/faculty.model";
@@ -92,13 +96,13 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
   }
 
   // find academic faculty info
-  const academicFaculty = await AcademicFaculty.findById(
+  /*  const academicFaculty = await AcademicFaculty.findById(
     payload.academicFaculty
   );
 
   if (!academicFaculty) {
     throw new AppError(400, "Academic faculty not found");
-  }
+  } */
 
   // create session
   const session = await mongoose.startSession();
@@ -187,5 +191,7 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
 };
 
 export const UserServices = {
-  createStudentIntoDB,createFacultyIntoDB,createAdminIntoDB
+  createStudentIntoDB,
+  createFacultyIntoDB,
+  createAdminIntoDB,
 };

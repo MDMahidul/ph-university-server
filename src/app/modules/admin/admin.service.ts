@@ -5,7 +5,7 @@ import { AdminSearchableFields } from './admin.constant';
 import { TAdmin } from './admin.interface';
 import { Admin } from './admin.model';
 import mongoose from 'mongoose';
-import AppError from '../../errors/Apperror';
+import AppError from '../../errors/AppError';
 
 const getAllAdminFromDB = async (query: Record<string, unknown>) => {
   const adminQuery = new QueryBuilder(Admin.find(), query)

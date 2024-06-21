@@ -1,11 +1,11 @@
 import httpStatus from "http-status";
+import AppError from "../../errors/AppError";
 import { User } from "../user/user.model";
 import { TLoginUser } from "./auth.interface";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../../config";
 import bcrypt from "bcrypt";
 import { createToken } from "./auth.utils";
-import AppError from "../../errors/Apperror";
 
 const loginUser = async (payload: TLoginUser) => {
   // checking if the user is exist

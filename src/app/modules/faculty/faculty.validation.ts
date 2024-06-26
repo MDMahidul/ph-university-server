@@ -16,7 +16,7 @@ const userNameValidationSchema = z.object({
 
 const createFacultyValidationSchema = z.object({
   body: z.object({
-    password: z.string().max(20),
+    password: z.string().max(20).optional(),
     faculty: z.object({
       name: userNameValidationSchema,
       designation: z.string(),
@@ -24,13 +24,13 @@ const createFacultyValidationSchema = z.object({
       dateOfBirth: z.string().optional(),
       email: z
         .string()
-        .nonempty('Email is required')
-        .email('Invalid email format'),
-      contactNo: z.string().nonempty('Contact is required'),
-      emergencyContactNo: z.string().nonempty('Emergency contact is required'),
+        .nonempty("Email is required")
+        .email("Invalid email format"),
+      contactNo: z.string().nonempty("Contact is required"),
+      emergencyContactNo: z.string().nonempty("Emergency contact is required"),
       bloodGroup: z.enum([...BloodGroup] as [string, ...string[]]).optional(),
-      presentAddress: z.string().nonempty('Present address is required'),
-      permanentAddress: z.string().nonempty('Permanent address is required'),
+      presentAddress: z.string().nonempty("Present address is required"),
+      permanentAddress: z.string().nonempty("Permanent address is required"),
       profileImage: z.string().optional(),
       academicDepartment: z.string(),
       /* academicFaculty: z.string(), */

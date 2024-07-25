@@ -3,7 +3,6 @@ import catchAsync from "../../utils/catchAsync";
 import { OfferedCourseServices } from "./offeredCourse.service";
 import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
-import { OfferedCourse } from "./offeredCourse.model";
 
 const getAllOfferedCourses: RequestHandler = catchAsync(async (req, res) => {
   const result = await OfferedCourseServices.getAllOfferedCoursesFromDB(
@@ -14,7 +13,8 @@ const getAllOfferedCourses: RequestHandler = catchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "OfferedCourses retrieved successfully !",
-    data: result,
+    meta: result.meta,
+    data: result.result,
   });
 });
 

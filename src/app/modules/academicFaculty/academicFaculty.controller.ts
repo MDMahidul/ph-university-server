@@ -17,17 +17,18 @@ const createAcademicFaculty = catchAsync(async (req, res) => {
 });
 
 const getAllAcademicFaculty = catchAsync(async (req, res) => {
-  const result = await AcademicFacultyServices.getAllAcademicFacultyFromDB();
+  const result = await AcademicFacultyServices.getAllAcademicFacultyFromDB(req.query);
 
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
     message: "Academic faculties are retrived successfully!",
-    data: result,
+    meta:result.meta,
+    data: result.result,
   });
 });
 const getSingleAcademicFaculty = catchAsync(async (req, res) => {
-  const { id } = req.params;
+  const { facultyId } = req.params;
   const result =
     await AcademicFacultyServices.getSingleAcademicFacultyFromDB(facultyId);
 
@@ -39,10 +40,10 @@ const getSingleAcademicFaculty = catchAsync(async (req, res) => {
   });
 });
 const updateSingleAcademicFaculty = catchAsync(async (req, res) => {
-  const { id } = req.params;
+  const { facultyId } = req.params;
   const result =
     await AcademicFacultyServices.updateSingleAcademicFacultyIntoDB(
-      id,
+      facultyId,
       req.body
     );
 

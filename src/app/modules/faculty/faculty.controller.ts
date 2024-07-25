@@ -5,14 +5,15 @@ import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 
 const getAllFaculties: RequestHandler = catchAsync(async (req, res) => {
-  console.log(req.cookies);
+ 
   const result = await FacultyServices.getAllFacultiesFromDB(req.query);
 
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
     message: "Faculties data retrieved successfully!",
-    data: result,
+    meta: result.meta,
+    data: result.result,
   });
 });
 

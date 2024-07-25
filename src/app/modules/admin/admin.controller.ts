@@ -4,15 +4,16 @@ import sendResponse from "../../utils/sendResponse";
 import { AdminServices } from "./admin.service";
 import { RequestHandler } from "express";
 
-
+ 
 const getAllAdmin:RequestHandler = catchAsync(async(req,res)=>{
     const result = await AdminServices.getAllAdminFromDB(req.query);
 
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.OK,
-      message: 'Admins data retrieved successfully!',
-      data: result,
+      message: "Admins data retrieved successfully!",
+      meta: result.meta,
+      data: result.result,
     });
 })
 

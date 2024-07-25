@@ -18,6 +18,7 @@ import { Faculty } from "../faculty/faculty.model";
 import { Admin } from "../admin/admin.model";
 import { AcademicSemester } from "../academicSemister/academicSemester.model";
 import { sendImageToCloudinary } from "../../utils/sendImageToCloudinary";
+import { TAdmin } from "../admin/admin.interface";
 
 const createStudentIntoDB = async (
   file: any,
@@ -69,6 +70,7 @@ const createStudentIntoDB = async (
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id; // reference _id
     payload.profileImage = secure_url;
+    
     //create a user (transaction-2)
     const newStudent = await Student.create([payload], { session });
 
@@ -170,7 +172,7 @@ const createFacultyIntoDB = async (
 const createAdminIntoDB = async (
   file: any,
   password: string,
-  payload: TFaculty
+  payload: TAdmin
 ) => {
   // create a user object
   const userData: Partial<TUser> = {};

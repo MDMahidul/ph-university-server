@@ -2,7 +2,7 @@ import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
 import { CourseServices } from "./course.service";
-
+ 
 const createCourse = catchAsync(async (req, res) => {
   const result = await CourseServices.createCourseIntoDB(req.body);
 
@@ -20,8 +20,9 @@ const getAllCourses = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Course are retrieved successfully!',
-    data: result,
+    message: "Course are retrieved successfully!",
+    meta: result.meta,
+    data: result.result,
   });
 });
 

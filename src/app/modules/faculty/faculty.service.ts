@@ -5,7 +5,7 @@ import { FacultySearchableFields } from './faculty.constant';
 import { TFaculty } from './faculty.interface';
 import { Faculty } from './faculty.model';
 import mongoose from 'mongoose';
-import AppError from '../../errors/Apperror';
+import AppError from '../../errors/AppError';
 
 const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
   const facultyQuery = new QueryBuilder(
@@ -19,8 +19,13 @@ const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
     .fields();
 
   const result = await facultyQuery.modelQuery;
+  const meta = await facultyQuery.countTotal();
+  
+  return {
+    result,
+    meta,
+  };
 
-  return result;
 };
 
 const getSingleFacultyFromDB = async (id: string) => {

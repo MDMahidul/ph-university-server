@@ -1,5 +1,5 @@
 import httpStatus from "http-status";
-import AppError from "../../errors/Apperror";
+import AppError from "../../errors/AppError";
 import { User } from "../user/user.model";
 import { Student } from "./student.model";
 import mongoose from "mongoose";
@@ -9,7 +9,8 @@ import { studentSearchableFields } from "./student.constant";
 
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   const studentQuery = new QueryBuilder(
-    Student.find().populate('user')
+    Student.find()
+      .populate("user")
       .populate("admissionSemester")
       .populate({
         path: "academicDepartment",
@@ -25,9 +26,10 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
     .paginate()
     .fields();
 
-    const result = await studentQuery.modelQuery;
+  const meta = await studentQuery.countTotal();
+  const result = await studentQuery.modelQuery;
 
-    return result;
+  return { result, meta };
 };
 
 const getSingleStudentFromDB = async (id: string) => {

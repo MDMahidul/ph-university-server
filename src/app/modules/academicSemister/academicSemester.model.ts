@@ -5,8 +5,8 @@ import {
   AcademicSemesterName,
   Months,
 } from "./academicSemester.constant";
-import AppError from "../../errors/Apperror";
 import httpStatus from "http-status";
+import AppError from "../../errors/AppError";
 
 const academicSemesterSchema = new Schema<TAcademicSemester>({
   name: { type: String, required: true, enum: AcademicSemesterName },

@@ -6,7 +6,7 @@ import { handleZodError } from "../errors/handleZodError";
 import handleValidationError from "../errors/handleValidationError";
 import handleCastError from "../errors/handleCastError";
 import handleDuplicateError from "../errors/handleDuplicateError";
-import AppError from "../errors/Apperror";
+import AppError from "../errors/AppError";
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   // set default values
@@ -63,6 +63,7 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   //ultimate return
   return res.status(statusCode).json({
     success: false,
+    statusCode,
     message,
     errorSources,
     stack: config.NODE_ENV === "development" ? err?.stack : null,

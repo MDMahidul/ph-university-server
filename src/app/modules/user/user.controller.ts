@@ -7,7 +7,11 @@ import { RequestHandler } from "express";
 const createStudent = catchAsync(async (req, res) => {
   const { password, student: studentData } = req.body;
 
-  const result = await UserServices.createStudentIntoDB(req.file,password, studentData);
+  const result = await UserServices.createStudentIntoDB(
+    req.file,
+    password,
+    studentData
+  );
 
   sendResponse(res, {
     success: true,
@@ -35,7 +39,7 @@ const createFaculty: RequestHandler = catchAsync(async (req, res) => {
 });
 
 const createAdmin: RequestHandler = catchAsync(async (req, res) => {
-  const { password, faculty: adminData } = req.body;
+  const { password, admin: adminData } = req.body;
 
   const result = await UserServices.createAdminIntoDB(
     req.file,
@@ -86,5 +90,6 @@ export const UserControllers = {
   createStudent,
   createFaculty,
   createAdmin,
-  changeStatus,getMe
+  changeStatus,
+  getMe,
 };

@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+
+
 const userNameValidationSchema = z.object({
   firstName: z
     .string()
@@ -56,7 +58,7 @@ const createStudentValidationSchema = z.object({
       permanentAddress: z.string().nonempty("Permanent address is required"),
       guardian: guardianValidationSchema,
       localGuardian: localGuardianValidationSchema,
-      profileImage: z.string().optional(),
+     /*  profileImage: z.string().optional(), */
       admissionSemester: z.string(),
       academicDepartment: z.string(),
     }),
@@ -102,7 +104,7 @@ export const updateStudentValidationSchema = z.object({
       guardian: updateGuardianValidationSchema.optional(),
       localGuardian: updateLocalGuardianValidationSchema.optional(),
       admissionSemester: z.string().optional(),
-      profileImg: z.string().optional(),
+      profileImage: z.string().optional(),
       academicDepartment: z.string().optional(),
     }),
   }),

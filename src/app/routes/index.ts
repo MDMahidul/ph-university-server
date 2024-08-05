@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { UserRoutes } from "../modules/user/user.routes";
 import { StudentRoutes } from "../modules/student/student.routes";
-import { AcademicSemesterRouters } from "../modules/academicSemister/academicSemester.routes";
+import { AcademicSemesterRouters } from "../modules/academicSemester/academicSemester.routes";
 import { FacultyRouters } from "../modules/faculty/faculty.routes";
 import { AdminRouters } from "../modules/admin/admin.routes";
 import { CourseRouters } from "../modules/course/course.routes";
@@ -11,7 +11,7 @@ import { AuthRoutes } from "../modules/auth/auth.routes";
 import { AcademicDepartmentRouters } from "../modules/academicDepartment/academicDepartment.routes";
 import { AcademicFacultyRouters } from "../modules/academicFaculty/academicFaculty.routes";
 
-const router=Router();
+const router = Router();
 
 const moduleRoutes = [
   {
@@ -60,6 +60,6 @@ const moduleRoutes = [
   },
 ];
 
-moduleRoutes.forEach(route=>router.use(route.path,route.route));
+moduleRoutes.forEach((route) => router.use(route.path, route.route));
 
 export default router;

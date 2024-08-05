@@ -27,7 +27,7 @@ process.on("unhandledRejection", () => {
   }
   process.exit(1);
 });
-
+ 
 // handle unhandledRejection for sync func
 process.on("uncaughtException", () => {
   console.log(`unhandled exception is detected, shutting down server...`);

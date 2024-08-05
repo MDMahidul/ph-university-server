@@ -50,15 +50,16 @@ const updateAdminIntoDB = async (id: string, payload: Partial<TAdmin>) => {
 };
 
 const deleteAdminFromDB = async (id: string) => {
-  const isAdminExist = await Admin.findById(id);
+ /*  const isAdminExist = await Admin.findById(id);
   const isUserExist = await User.findById(id);
 
   if (!isAdminExist && !isUserExist) {
     throw new AppError(httpStatus.NOT_FOUND, 'Admin not found!');
-  }
+  } */
 
   // start session
   const session = await mongoose.startSession();
+  
   try {
     // start transaction
     session.startTransaction();

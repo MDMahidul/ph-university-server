@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { BloodGroup, Gender } from './faculty.constant';
+import { BloodGroup,facultyDesignation, Gender } from './faculty.constant';
 
 const userNameValidationSchema = z.object({
   firstName: z
@@ -19,7 +19,7 @@ const createFacultyValidationSchema = z.object({
     password: z.string().max(20).optional(),
     faculty: z.object({
       name: userNameValidationSchema,
-      designation: z.string(),
+      designation: z.enum([...facultyDesignation] as [string, ...string[]], {}),
       gender: z.enum([...Gender] as [string, ...string[]], {}),
       dateOfBirth: z.string().optional(),
       email: z
@@ -31,9 +31,9 @@ const createFacultyValidationSchema = z.object({
       bloodGroup: z.enum([...BloodGroup] as [string, ...string[]]).optional(),
       presentAddress: z.string().nonempty("Present address is required"),
       permanentAddress: z.string().nonempty("Permanent address is required"),
-      profileImage: z.string().optional(),
+      /* profileImage: z.string().optional(), */
       academicDepartment: z.string(),
-      /* academicFaculty: z.string(), */
+      academicFaculty: z.string(),
     }),
   }),
 });
@@ -48,7 +48,9 @@ const updateFacultyValidationSchema = z.object({
   body: z.object({
     faculty: z.object({
       name: updateUserNameValidationSchema.optional(),
-      designation: z.string().optional(),
+      designation: z
+        .enum([...facultyDesignation] as [string, ...string[]])
+        .optional(),
       gender: z.enum([...Gender] as [string, ...string[]]).optional(),
       dateOfBirth: z.string().optional(),
       email: z.string().email().optional(),
@@ -57,9 +59,9 @@ const updateFacultyValidationSchema = z.object({
       bloogGroup: z.enum([...BloodGroup] as [string, ...string[]]).optional(),
       presentAddress: z.string().optional(),
       permanentAddress: z.string().optional(),
-      profileImg: z.string().optional(),
+      /* profileImg: z.string().optional(), */
       academicDepartment: z.string().optional(),
-      /* academicFaculty: z.string().optional(), */
+      academicFaculty: z.string().optional(),
     }),
   }),
 });

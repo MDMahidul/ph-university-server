@@ -46,7 +46,7 @@ router.post(
   UserControllers.createAdmin
 );
 
-router.post(
+router.patch(
   "/change-status/:id",
   auth("admin"),
   validateRequest(UserValidation.changeStatusValidationSchema),

@@ -1,28 +1,31 @@
-import { Model, Types } from 'mongoose';
+/* eslint-disable no-unused-vars */
+import { Model, Types } from "mongoose";
 
 export type TUserName = {
   firstName: string;
   middleName?: string;
   lastName: string;
 };
-export type TGender = 'male' | 'female' | 'others';
+export type TGender = "male" | "female" | "others";
 
 export type TBloodGroup =
-  | 'A+'
-  | 'A-'
-  | 'B+'
-  | 'B-'
-  | 'O+'
-  | 'O-'
-  | 'AB+'
-  | 'AB-';
+  | "A+"
+  | "A-"
+  | "B+"
+  | "B-"
+  | "O+"
+  | "O-"
+  | "AB+"
+  | "AB-";
+
+export type TDesignation = "Admin" | "Moderator";
 
 export type TAdmin = {
   id: string;
   user: Types.ObjectId;
   name: TUserName;
   gender: TGender;
-  designation: string;
+  designation: TDesignation;
   dateOfBirth: Date;
   email: string;
   contactNo: string;
@@ -31,7 +34,7 @@ export type TAdmin = {
   presentAddress: string;
   permanentAddress: string;
   profileImage?: string;
-  managementDepartment: string;
+  /* managementDepartment: string; */
   isDeleted: boolean;
 };
 

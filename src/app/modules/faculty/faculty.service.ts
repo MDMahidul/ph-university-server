@@ -9,7 +9,7 @@ import AppError from '../../errors/AppError';
 
 const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
   const facultyQuery = new QueryBuilder(
-    Faculty.find().populate('academicDepartment'),
+    Faculty.find().populate('academicDepartment').populate('academicFaculty'),
     query,
   )
     .search(FacultySearchableFields)
@@ -27,9 +27,9 @@ const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
   };
 
 };
-
+ 
 const getSingleFacultyFromDB = async (id: string) => {
-  const result = await Faculty.findById(id).populate('academicDepartment');
+  const result = await Faculty.findById(id).populate('academicDepartment').populate('academicFaculty');
 
   return result;
 };
@@ -56,15 +56,16 @@ const updateFacultyIntoDB = async (id: string, payload: Partial<TFaculty>) => {
 };
 
 const deleteSingleFacultyFormDB = async (id: string) => {
-  const isFacultyExist = await Faculty.findById(id);
+/*   const isFacultyExist = await Faculty.findById(id);
   const isUserExist = await User.findById(id);
 
   if (!isFacultyExist && !isUserExist) {
     throw new AppError(httpStatus.NOT_FOUND, 'Faculty not found!');
-  }
+  } */
 
   // start session
   const session = await mongoose.startSession();
+  
   try {
     // start transaction
     session.startTransaction();

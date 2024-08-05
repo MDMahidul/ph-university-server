@@ -1,10 +1,11 @@
+/* eslint-disable no-unused-vars */
 import { Model, Types } from "mongoose";
 
 export type TUserName = {
-    firstName: string;
-    middleName?:string;
-    lastName:string;
-}
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+};
 export type TGender = "male" | "female" | "others";
 
 export type TBloodGroup =
@@ -17,12 +18,20 @@ export type TBloodGroup =
   | "AB+"
   | "AB-";
 
+export type TFacultyDesignation =
+  | "Professor"
+  | "Associate Professor"
+  | "Assistant Professor"
+  | "Lecturer"
+  | "Senior Lecturer"
+  | "Instructor";
+
 export type TFaculty = {
   id: string;
   user: Types.ObjectId;
   name: TUserName;
   gender: TGender;
-  designation:string;
+  designation: TFacultyDesignation;
   dateOfBirth: Date;
   email: string;
   contactNo: string;
@@ -31,7 +40,7 @@ export type TFaculty = {
   presentAddress: string;
   permanentAddress: string;
   profileImage?: string;
-  /* academicFaculty: Types.ObjectId; */
+  academicFaculty: Types.ObjectId;
   academicDepartment: Types.ObjectId;
   isDeleted: boolean;
 };

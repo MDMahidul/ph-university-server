@@ -86,13 +86,14 @@ const updateStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {
 };
 
 const deleteSingleStudentFromDB = async (id: string) => {
-  const isStudentExist = await Student.findById(id);
+  /* const isStudentExist = await Student.findById(id);
   const isUserExist = await User.findById(id);
   if (!isStudentExist || !isUserExist) {
     throw new AppError(httpStatus.NOT_FOUND, "Student not found!");
-  }
+  } */
   // start session
   const session = await mongoose.startSession();
+
   try {
     // start transaction
     session.startTransaction();
@@ -105,11 +106,16 @@ const deleteSingleStudentFromDB = async (id: string) => {
     if (!deletedStudent) {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete student!");
     }
+
+    // get user _id from deleteStudent
+    const userId = deletedStudent.user;
+
     const deleteUser = await User.findByIdAndUpdate(
-      id,
+      userId,
       { isDeleted: true },
       { new: true, session }
     );
+
     if (!deleteUser) {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete user!");
     }

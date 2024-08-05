@@ -47,6 +47,7 @@ export const userSchema = new Schema<TUser, UserModel>(
 
 // pre save middleware/hook : will work on create() and save()
 userSchema.pre("save", async function (next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
   const user = this; // get the document
 
   //hashing the password before save to db

@@ -59,7 +59,7 @@ const updateSingleAcademicSemesterIntoDB = async (
     payload,
     { new: true }
   );
-
+ 
   return result;
 };
 

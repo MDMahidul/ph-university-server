@@ -1,15 +1,16 @@
 import { Router } from "express";
-import { UserRoutes } from "../modules/user/user.routes";
-import { StudentRoutes } from "../modules/student/student.routes";
-import { AcademicSemesterRouters } from "../modules/academicSemester/academicSemester.routes";
-import { FacultyRouters } from "../modules/faculty/faculty.routes";
-import { AdminRouters } from "../modules/admin/admin.routes";
-import { CourseRouters } from "../modules/course/course.routes";
-import { semesterRegistrationRoutes } from "../modules/semesterRegistration/semesterRegistration.routes";
-import { OfferedCourseRoutes } from "../modules/offeredCourse/offeredCourse.routes";
-import { AuthRoutes } from "../modules/auth/auth.routes";
-import { AcademicDepartmentRouters } from "../modules/academicDepartment/academicDepartment.routes";
-import { AcademicFacultyRouters } from "../modules/academicFaculty/academicFaculty.routes";
+import { UserRoutes } from "../modules/User/user.routes";
+import { StudentRoutes } from "../modules/Student/student.routes";
+import { AcademicSemesterRouters } from "../modules/AcademicSemester/academicSemester.routes";
+import { FacultyRouters } from "../modules/Faculty/faculty.routes";
+import { AdminRouters } from "../modules/Admin/admin.routes";
+import { CourseRouters } from "../modules/Course/course.routes";
+import { semesterRegistrationRoutes } from "../modules/SemesterRegistration/semesterRegistration.routes";
+import { OfferedCourseRoutes } from "../modules/OfferedCourse/offeredCourse.routes";
+import { AuthRoutes } from "../modules/Auth/auth.routes";
+import { AcademicDepartmentRouters } from "../modules/AcademicDepartment/academicDepartment.routes";
+import { AcademicFacultyRouters } from "../modules/AcademicFaculty/academicFaculty.routes";
+import { EnrolledCourseRoutes } from "../modules/EnrolledCourse/enrolledCourse.routes";
 
 const router = Router();
 
@@ -57,6 +58,10 @@ const moduleRoutes = [
   {
     path: "/auth",
     route: AuthRoutes,
+  },
+  {
+    path: "/enrolled-courses",
+    route: EnrolledCourseRoutes,
   },
 ];
 

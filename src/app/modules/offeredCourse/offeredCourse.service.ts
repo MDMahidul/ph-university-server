@@ -1,17 +1,25 @@
 import httpStatus from "http-status";
-import { SemesterRegistration } from "../semesterRegistration/semesterRegistration.model";
+import { SemesterRegistration } from "../SemesterRegistration/semesterRegistration.model";
 import { TOfferedCourse } from "./offeredCourse.interface";
 import { OfferedCourse } from "./offeredCourse.model";
-import { AcademicFaculty } from "../academicFaculty/academicFaculty.model";
-import { AcademicDepartment } from "../academicDepartment/academicDepartment.model";
-import { Course } from "../course/course.model";
-import { Faculty } from "../faculty/faculty.model";
+import { AcademicFaculty } from "../AcademicFaculty/academicFaculty.model";
+import { AcademicDepartment } from "../AcademicDepartment/academicDepartment.model";
+import { Course } from "../Course/course.model";
+import { Faculty } from "../Faculty/faculty.model";
 import AppError from "../../errors/AppError";
 import { hasTimeConflict } from "./offeredCourse.utlis";
 import QueryBuilder from "../../builder/QueryBuilder";
 
 const getAllOfferedCoursesFromDB = async (query: Record<string, unknown>) => {
-  const offeredCourseQuery = new QueryBuilder(OfferedCourse.find(), query)
+  const offeredCourseQuery = new QueryBuilder(
+    OfferedCourse.find()
+      .populate("academicFaculty")
+      .populate("academicSemester")
+      .populate("academicDepartment")
+      .populate("faculty")
+      .populate("course"),
+    query
+  )
     .filter()
     .sort()
     .paginate()
@@ -222,7 +230,6 @@ const deleteOfferedCourseFromDB = async (id: string) => {
 
   return result;
 };
-
 
 export const OfferedCourseServices = {
   createOfferedCourseIntoDB,

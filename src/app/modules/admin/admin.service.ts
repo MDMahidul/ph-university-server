@@ -1,11 +1,11 @@
-import httpStatus from 'http-status';
-import QueryBuilder from '../../builder/QueryBuilder';
-import { User } from '../user/user.model';
-import { AdminSearchableFields } from './admin.constant';
-import { TAdmin } from './admin.interface';
-import { Admin } from './admin.model';
-import mongoose from 'mongoose';
-import AppError from '../../errors/AppError';
+import httpStatus from "http-status";
+import QueryBuilder from "../../builder/QueryBuilder";
+import { User } from "../User/user.model";
+import { AdminSearchableFields } from "./admin.constant";
+import { TAdmin } from "./admin.interface";
+import { Admin } from "./admin.model";
+import mongoose from "mongoose";
+import AppError from "../../errors/AppError";
 
 const getAllAdminFromDB = async (query: Record<string, unknown>) => {
   const adminQuery = new QueryBuilder(Admin.find(), query)
@@ -17,7 +17,7 @@ const getAllAdminFromDB = async (query: Record<string, unknown>) => {
 
   const result = await adminQuery.modelQuery;
   const meta = await adminQuery.countTotal();
-  
+
   return {
     result,
     meta,
@@ -42,7 +42,7 @@ const updateAdminIntoDB = async (id: string, payload: Partial<TAdmin>) => {
     }
   }
 
-  const result = await Admin.findByIdAndUpdate(id , modifiedUpdatedData, {
+  const result = await Admin.findByIdAndUpdate(id, modifiedUpdatedData, {
     new: true,
     runValidators: true,
   });
@@ -50,7 +50,7 @@ const updateAdminIntoDB = async (id: string, payload: Partial<TAdmin>) => {
 };
 
 const deleteAdminFromDB = async (id: string) => {
- /*  const isAdminExist = await Admin.findById(id);
+  /*  const isAdminExist = await Admin.findById(id);
   const isUserExist = await User.findById(id);
 
   if (!isAdminExist && !isUserExist) {
@@ -59,18 +59,18 @@ const deleteAdminFromDB = async (id: string) => {
 
   // start session
   const session = await mongoose.startSession();
-  
+
   try {
     // start transaction
     session.startTransaction();
     const deletedAdmin = await Admin.findByIdAndUpdate(
       id,
       { isDeleted: true },
-      { new: true, session },
+      { new: true, session }
     );
 
     if (!deletedAdmin) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete Admin!');
+      throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete Admin!");
     }
 
     // get user _id from deletedFaculty
@@ -79,11 +79,11 @@ const deleteAdminFromDB = async (id: string) => {
     const deletedUser = await User.findByIdAndUpdate(
       userId,
       { isDeleted: true },
-      { new: true, session },
+      { new: true, session }
     );
 
     if (!deletedUser) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete user');
+      throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete user");
     }
 
     // commit transaction if successed
@@ -100,7 +100,7 @@ const deleteAdminFromDB = async (id: string) => {
     //end session if failed
     await session.endSession();
 
-    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete Admin');
+    throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete Admin");
   }
 };
 

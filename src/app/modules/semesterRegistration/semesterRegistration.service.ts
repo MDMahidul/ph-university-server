@@ -1,10 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from "http-status";
 import { TSemesterRegistration } from "./semesterRegistration.interface";
 import { SemesterRegistration } from "./semesterRegistration.model";
 import QueryBuilder from "../../builder/QueryBuilder";
-import { AcademicSemester } from "../academicSemester/academicSemester.model";
+import { AcademicSemester } from "../AcademicSemester/academicSemester.model";
 import AppError from "../../errors/AppError";
 import { RegistrationStatus } from "./semesterRegistration.constant";
+import mongoose from "mongoose";
+import { OfferedCourse } from "../OfferedCourse/offeredCourse.model";
 
 const createSemesterRegistrationIntoDB = async (
   payload: TSemesterRegistration

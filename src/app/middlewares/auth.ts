@@ -4,8 +4,8 @@ import AppError from "../errors/Apperror";
 import httpStatus from "http-status";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../config";
-import { TUserRole } from "../modules/user/user.interface";
-import { User } from "../modules/user/user.model";
+import { TUserRole } from "../modules/User/user.interface";
+import { User } from "../modules/User/user.model";
 
 const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -18,15 +18,14 @@ const auth = (...requiredRoles: TUserRole[]) => {
 
     // check if the token is valid
     let decoded;
-      try {
-         decoded = jwt.verify(
-          token,
-          config.jwt_access_secret as string
-        ) as JwtPayload;
-      } catch (error) {
-        throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized!");
-      }
-    
+    try {
+      decoded = jwt.verify(
+        token,
+        config.jwt_access_secret as string
+      ) as JwtPayload;
+    } catch (error) {
+      throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized!");
+    }
 
     // check user role
     const { role, userId, iat } = decoded;

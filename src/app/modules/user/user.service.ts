@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from "mongoose";
 import config from "../../config";
-import { TStudent } from "../student/student.interface";
-import { Student } from "../student/student.model";
+import { TStudent } from "../Student/student.interface";
+import { Student } from "../Student/student.model";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
 import {
@@ -12,14 +12,14 @@ import {
 } from "./user.utils";
 import AppError from "../../errors/AppError";
 import httpStatus from "http-status";
-import { TFaculty } from "../faculty/faculty.interface";
-import { AcademicDepartment } from "../academicDepartment/academicDepartment.model";
+import { TFaculty } from "../Faculty/faculty.interface";
+import { AcademicDepartment } from "../AcademicDepartment/academicDepartment.model";
 //import { AcademicFaculty } from "../academicFaculty/academicFaculty.model";
-import { Faculty } from "../faculty/faculty.model";
-import { Admin } from "../admin/admin.model";
-import { AcademicSemester } from "../academicSemester/academicSemester.model";
+import { Faculty } from "../Faculty/faculty.model";
+import { Admin } from "../Admin/admin.model";
+import { AcademicSemester } from "../AcademicSemester/academicSemester.model";
 import { sendImageToCloudinary } from "../../utils/sendImageToCloudinary";
-import { TAdmin } from "../admin/admin.interface";
+import { TAdmin } from "../Admin/admin.interface";
 
 const createStudentIntoDB = async (
   file: any,
@@ -193,7 +193,7 @@ const createFacultyIntoDB = async (
 const createAdminIntoDB = async (
   file: any,
   password: string,
-  payload: TAdmin,
+  payload: TAdmin
 ) => {
   // create a user object
   const userData: Partial<TUser> = {};

@@ -1,16 +1,16 @@
-import httpStatus from 'http-status';
-import QueryBuilder from '../../builder/QueryBuilder';
-import { User } from '../user/user.model';
-import { FacultySearchableFields } from './faculty.constant';
-import { TFaculty } from './faculty.interface';
-import { Faculty } from './faculty.model';
-import mongoose from 'mongoose';
-import AppError from '../../errors/AppError';
+import httpStatus from "http-status";
+import QueryBuilder from "../../builder/QueryBuilder";
+import { User } from "../User/user.model";
+import { FacultySearchableFields } from "./faculty.constant";
+import { TFaculty } from "./faculty.interface";
+import { Faculty } from "./faculty.model";
+import mongoose from "mongoose";
+import AppError from "../../errors/AppError";
 
 const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
   const facultyQuery = new QueryBuilder(
-    Faculty.find().populate('academicDepartment').populate('academicFaculty'),
-    query,
+    Faculty.find().populate("academicDepartment").populate("academicFaculty"),
+    query
   )
     .search(FacultySearchableFields)
     .filter()
@@ -20,16 +20,17 @@ const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
 
   const result = await facultyQuery.modelQuery;
   const meta = await facultyQuery.countTotal();
-  
+
   return {
     result,
     meta,
   };
-
 };
- 
+
 const getSingleFacultyFromDB = async (id: string) => {
-  const result = await Faculty.findById(id).populate('academicDepartment').populate('academicFaculty');
+  const result = await Faculty.findById(id)
+    .populate("academicDepartment")
+    .populate("academicFaculty");
 
   return result;
 };
@@ -56,7 +57,7 @@ const updateFacultyIntoDB = async (id: string, payload: Partial<TFaculty>) => {
 };
 
 const deleteSingleFacultyFormDB = async (id: string) => {
-/*   const isFacultyExist = await Faculty.findById(id);
+  /*   const isFacultyExist = await Faculty.findById(id);
   const isUserExist = await User.findById(id);
 
   if (!isFacultyExist && !isUserExist) {
@@ -65,18 +66,18 @@ const deleteSingleFacultyFormDB = async (id: string) => {
 
   // start session
   const session = await mongoose.startSession();
-  
+
   try {
     // start transaction
     session.startTransaction();
     const deletedFaculty = await Faculty.findByIdAndUpdate(
       id,
       { isDeleted: true },
-      { new: true, session },
+      { new: true, session }
     );
 
     if (!deletedFaculty) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete faculty!');
+      throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete faculty!");
     }
 
     // get user _id from deletedFaculty
@@ -85,11 +86,11 @@ const deleteSingleFacultyFormDB = async (id: string) => {
     const deletedUser = await User.findByIdAndUpdate(
       userId,
       { isDeleted: true },
-      { new: true, session },
+      { new: true, session }
     );
 
     if (!deletedUser) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete user');
+      throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete user");
     }
 
     // commit transaction if successed
@@ -106,7 +107,7 @@ const deleteSingleFacultyFormDB = async (id: string) => {
     //end session if failed
     await session.endSession();
 
-    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete Faculty');
+    throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete Faculty");
   }
 };
 

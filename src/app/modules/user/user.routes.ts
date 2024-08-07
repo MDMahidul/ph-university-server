@@ -1,9 +1,9 @@
 import express, { NextFunction, Request, Response } from "express";
 import { UserControllers } from "./user.controller";
 import validateRequest from "../../middlewares/validationRequest";
-import { studentValidations } from "../student/student.validation";
-import { facultyValidations } from "../faculty/faculty.validation";
-import { adminValidations } from "../admin/admin.validation";
+import { studentValidations } from "../Student/student.validation";
+import { facultyValidations } from "../Faculty/faculty.validation";
+import { adminValidations } from "../Admin/admin.validation";
 import auth from "../../middlewares/auth";
 import { USER_ROLE } from "./user.constant";
 import { UserValidation } from "./user.validation";

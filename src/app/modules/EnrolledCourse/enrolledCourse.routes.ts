@@ -24,4 +24,10 @@ router.patch(
   EnrolledCourseControllers.updateEnrolledCourse
 );
 
+router.get(
+  "/",
+  auth("admin"),
+  EnrolledCourseControllers.getAllEnrolledCourse
+);
+
 export const EnrolledCourseRoutes = router;

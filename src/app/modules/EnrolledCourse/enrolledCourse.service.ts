@@ -9,6 +9,8 @@ import { SemesterRegistration } from "../SemesterRegistration/semesterRegistrati
 import { Course } from "../Course/course.model";
 import mongoose from "mongoose";
 import { Faculty } from "../Faculty/faculty.model";
+import { calculateGradeAndPoints } from "./enrolledCourse.utils";
+import QueryBuilder from "../../builder/QueryBuilder";
 
 const createEnrolledCourseIntoDB = async (
   userId: string,
@@ -200,6 +202,22 @@ const updateEnrolledCourseIntoDB = async (
   /* update course marks dynamically */
   const modifiedData: Record<string, unknown> = { ...courseMarks };
 
+  if (courseMarks?.finalTerm) {
+    const { classTest1, classTest2, midTerm, finalTerm } =
+      isCourseBelongsToFaculty.courseMarks;
+
+    const totalMarks =
+      Math.ceil(classTest1 * 0.1) +
+      Math.ceil(midTerm * 0.3) +
+      Math.ceil(classTest2 * 0.1) +
+      Math.ceil(finalTerm * 0.5);
+
+    const result = calculateGradeAndPoints(totalMarks);
+    modifiedData.grade = result.grade;
+    modifiedData.gradePoints = result.gradePoints;
+    modifiedData.isCompleted = true;
+  }
+
   if (courseMarks && Object.keys(courseMarks).length) {
     for (const [key, value] of Object.entries(courseMarks)) {
       modifiedData[`courseMarks.${key}`] = value;
@@ -216,7 +234,23 @@ const updateEnrolledCourseIntoDB = async (
   return result;
 };
 
+const getAllEnrolledCourseFromDB = async(query:Record<string,unknown>)=>{
+const enrolledCourseQuery = new QueryBuilder(EnrolledCourse.find(), query)
+  .filter()
+  .sort()
+  .paginate()
+  .fields();
+
+  const result = await enrolledCourseQuery.modelQuery;
+  const meta = await enrolledCourseQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
+}
 export const EnrolledCourseServices = {
   createEnrolledCourseIntoDB,
   updateEnrolledCourseIntoDB,
+  getAllEnrolledCourseFromDB,
 };

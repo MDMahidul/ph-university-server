@@ -1,41 +1,45 @@
-import express from 'express';
-import { SemesterRegistrationController } from './semesterRegistration.controller';
-import { SemesterRegistrationValidations } from './semesterRegistration.validation';
-import validateRequest from '../../middlewares/validationRequest';
+import express from "express";
+import { SemesterRegistrationController } from "./semesterRegistration.controller";
+import { SemesterRegistrationValidations } from "./semesterRegistration.validation";
+import validateRequest from "../../middlewares/validationRequest";
+import auth from "../../middlewares/auth";
 
 const router = express.Router();
 
 router.post(
-  '/create-semester-registration',
+  "/create-semester-registration",
+  auth("superAdmin", "admin"),
   validateRequest(
-    SemesterRegistrationValidations.createSemesterRegistrationValidationSchema,
+    SemesterRegistrationValidations.createSemesterRegistrationValidationSchema
   ),
-  SemesterRegistrationController.createSemesterRegistration,
+  SemesterRegistrationController.createSemesterRegistration
 );
 
 router.get(
-  '/:id',
-  SemesterRegistrationController.getSingleSemesterRegistration,
+  "/:id",
+  auth("superAdmin", "admin", "faculty", "student"),
+  SemesterRegistrationController.getSingleSemesterRegistration
 );
 
 router.patch(
-  '/:id',
+  "/:id",
+  auth("superAdmin", "admin"),
   validateRequest(
-    SemesterRegistrationValidations.upadateSemesterRegistrationValidationSchema,
+    SemesterRegistrationValidations.upadateSemesterRegistrationValidationSchema
   ),
-  SemesterRegistrationController.updateSemesterRegistration,
-);
-
-router.get(
-  '/:id',
-  SemesterRegistrationController.getSingleSemesterRegistration,
+  SemesterRegistrationController.updateSemesterRegistration
 );
 
 router.delete(
-  '/:id',
-  SemesterRegistrationController.deleteSemesterRegistration,
+  "/:id",
+  auth("superAdmin", "admin"),
+  SemesterRegistrationController.deleteSemesterRegistration
 );
 
-router.get('/', SemesterRegistrationController.getAllSemesterRegistrations);
+router.get(
+  "/",
+  auth("superAdmin", "admin", "faculty", "student"),
+  SemesterRegistrationController.getAllSemesterRegistrations
+);
 
 export const semesterRegistrationRoutes = router;

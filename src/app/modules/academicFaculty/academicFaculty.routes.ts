@@ -7,19 +7,29 @@ import auth from "../../middlewares/auth";
 const router = express.Router();
 
 router.post(
-  "/create-academic-faculty",auth("superAdmin","admin"),
+  "/create-academic-faculty",
+  auth("superAdmin", "admin"),
   validateRequest(
     AcademicFacultyValidation.createAcademicFacultyValidationSchema
   ),
   AcademicFacultyControllers.createAcademicFaculty
 );
 
-router.get("/", AcademicFacultyControllers.getAllAcademicFaculty);
+router.get(
+  "/",
+  auth("superAdmin", "admin", "faculty", "student"),
+  AcademicFacultyControllers.getAllAcademicFaculty
+);
 
-router.get("/:facultyId", AcademicFacultyControllers.getSingleAcademicFaculty);
+router.get(
+  "/:facultyId",
+  auth("superAdmin", "admin", "faculty", "student"),
+  AcademicFacultyControllers.getSingleAcademicFaculty
+);
 
 router.patch(
   "/:facultyId",
+  auth("superAdmin", "admin", "faculty", "student"),
   validateRequest(
     AcademicFacultyValidation.updateAcademicFacultyValidationSchema
   ),

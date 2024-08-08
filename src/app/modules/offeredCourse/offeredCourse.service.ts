@@ -9,15 +9,11 @@ import { Faculty } from "../Faculty/faculty.model";
 import AppError from "../../errors/AppError";
 import { hasTimeConflict } from "./offeredCourse.utlis";
 import QueryBuilder from "../../builder/QueryBuilder";
+import { Student } from "../Student/student.model";
 
 const getAllOfferedCoursesFromDB = async (query: Record<string, unknown>) => {
   const offeredCourseQuery = new QueryBuilder(
-    OfferedCourse.find()
-      .populate("academicFaculty")
-      .populate("academicSemester")
-      .populate("academicDepartment")
-      .populate("faculty")
-      .populate("course"),
+    OfferedCourse.find(),
     query
   )
     .filter()
@@ -32,6 +28,16 @@ const getAllOfferedCoursesFromDB = async (query: Record<string, unknown>) => {
     meta,
     result,
   };
+};
+
+const getMyOfferedCoursesFromDB = async (userId :string) => {
+  const student = await Student.findOne({id:userId});
+
+  if(!student){
+    throw new AppError(httpStatus.NOT_FOUND,'Student not found!')
+  }
+
+  return null;
 };
 
 const getSingleOfferedCourseFromDB = async (id: string) => {
@@ -237,4 +243,5 @@ export const OfferedCourseServices = {
   getAllOfferedCoursesFromDB,
   getSingleOfferedCourseFromDB,
   deleteOfferedCourseFromDB,
+  getMyOfferedCoursesFromDB,
 };

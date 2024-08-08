@@ -86,7 +86,6 @@ const createStudentIntoDB = async (
     //set id, _id as user
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id; // reference _id
-    //payload.profileImage = secure_url;
 
     //create a user (transaction-2)
     const newStudent = await Student.create([payload], { session });
@@ -126,66 +125,61 @@ const createFacultyIntoDB = async (
   userData.role = "faculty";
   userData.email = payload.email;
 
+  // Find academic department info
+  const academicDepartment = await AcademicDepartment.findById(
+    payload.academicDepartment
+  );
+
+  if (!academicDepartment) {
+    throw new AppError(400, "Academic department not found");
+  }
+
+  /* set the faculty from the department data */
+  payload.academicFaculty = academicDepartment.academicFaculty;
+
+  // Create session
+  const session = await mongoose.startSession();
+
   try {
-    // Find academic department info
-    const academicDepartment = await AcademicDepartment.findById(
-      payload.academicDepartment
-    );
+    // Start transaction
+    session.startTransaction();
 
-    if (!academicDepartment) {
-      throw new AppError(400, "Academic department not found");
+    // Set generated ID
+    userData.id = await generateFacultyId();
+
+    if (file) {
+      const imageName = `${userData.id}${payload.name.firstName}`;
+      const path = file.path;
+      // Send image to Cloudinary
+      const { secure_url } = await sendImageToCloudinary(imageName, path);
+      payload.profileImage = secure_url as string;
     }
 
-    payload.academicFaculty = academicDepartment.academicFaculty;
+    // Create a user
+    const newUser = await User.create([userData], { session });
 
-    // Create session
-    const session = await mongoose.startSession();
-
-    try {
-      // Start transaction
-      session.startTransaction();
-
-      // Set generated ID
-      userData.id = await generateFacultyId();
-
-      if (file) {
-        const imageName = `${userData.id}${payload.name.firstName}`;
-        const path = file.path;
-        // Send image to Cloudinary
-        const { secure_url } = await sendImageToCloudinary(imageName, path);
-        payload.profileImage = secure_url as string;
-      }
-
-      // Create a user
-      const newUser = await User.create([userData], { session });
-
-      if (!newUser.length) {
-        throw new AppError(400, "Failed to create user!");
-      }
-
-      // Set ID and _id as user reference
-      payload.id = newUser[0].id;
-      payload.user = newUser[0]._id; // Reference _id
-
-      // Create a faculty (transaction-2)
-      const newFaculty = await Faculty.create([payload], { session });
-
-      if (!newFaculty.length) {
-        throw new AppError(400, "Failed to create faculty");
-      }
-
-      await session.commitTransaction();
-      await session.endSession();
-
-      return newFaculty;
-    } catch (error) {
-      await session.abortTransaction();
-      await session.endSession();
-      console.error("Transaction error:", error);
-      throw new AppError(400, error.message || "Failed to create Faculty");
+    if (!newUser.length) {
+      throw new AppError(400, "Failed to create user!");
     }
-  } catch (error) {
-    console.error("Outer error:", error);
+
+    // Set ID and _id as user reference
+    payload.id = newUser[0].id;
+    payload.user = newUser[0]._id; // Reference _id
+
+    // Create a faculty (transaction-2)
+    const newFaculty = await Faculty.create([payload], { session });
+
+    if (!newFaculty.length) {
+      throw new AppError(400, "Failed to create faculty");
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return newFaculty;
+  } catch (error: any) {
+    await session.abortTransaction();
+    await session.endSession();
     throw new AppError(400, error.message || "Failed to create Faculty");
   }
 };
@@ -234,7 +228,7 @@ const createAdminIntoDB = async (
     // set id ,_id as user
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id; //reference _id
-    //payload.profileImage = secure_url;
+
     // create a faculty (transaction-2)
 
     const newAdmin = await Admin.create([payload], { session });

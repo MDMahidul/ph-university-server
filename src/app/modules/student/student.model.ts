@@ -125,7 +125,7 @@ const studentSchema = new Schema<TStudent>(
       type: localGuardianSchema,
       required: [true, "LG is required"],
     },
-    profileImage: { type: String },
+    profileImage: { type: String, default: "" },
     admissionSemester: {
       type: Schema.Types.ObjectId,
       ref: "AcademicSemester",

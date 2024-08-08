@@ -31,9 +31,7 @@ const createFacultyValidationSchema = z.object({
       bloodGroup: z.enum([...BloodGroup] as [string, ...string[]]).optional(),
       presentAddress: z.string().nonempty("Present address is required"),
       permanentAddress: z.string().nonempty("Permanent address is required"),
-      /* profileImage: z.string().optional(), */
       academicDepartment: z.string(),
-      academicFaculty: z.string(),
     }),
   }),
 });
@@ -59,9 +57,7 @@ const updateFacultyValidationSchema = z.object({
       bloogGroup: z.enum([...BloodGroup] as [string, ...string[]]).optional(),
       presentAddress: z.string().optional(),
       permanentAddress: z.string().optional(),
-      /* profileImg: z.string().optional(), */
       academicDepartment: z.string().optional(),
-      academicFaculty: z.string().optional(),
     }),
   }),
 });

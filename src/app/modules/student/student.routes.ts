@@ -6,10 +6,7 @@ import auth from "../../middlewares/auth";
 
 const router = express.Router();
 
-//will call controller function
-//router.post('/create-student', StudentController.createStudent);
-
-router.get("/", StudentController.getAllStudents);
+router.get("/", auth("superAdmin", "admin"), StudentController.getAllStudents);
 
 router.get(
   "/:id",
@@ -19,10 +16,15 @@ router.get(
 
 router.patch(
   "/:id",
+  auth("superAdmin", "admin"),
   validateRequest(studentValidations.updateStudentValidationSchema),
   StudentController.updateStudent
 );
 
-router.delete("/:id", StudentController.deleteSingleStudent);
+router.delete(
+  "/:id",
+  auth("superAdmin", "admin"),
+  StudentController.deleteSingleStudent
+);
 
 export const StudentRoutes = router;

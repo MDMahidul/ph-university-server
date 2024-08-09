@@ -30,6 +30,7 @@ const getAllAcademicSemester: RequestHandler = catchAsync(async (req, res) => {
     data: result.result,
   });
 });
+
 const getSingleAcademicSemester: RequestHandler = catchAsync(
   async (req, res) => {
     const { semesterId } = req.params;

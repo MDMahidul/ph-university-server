@@ -208,9 +208,9 @@ const updateEnrolledCourseIntoDB = async (
 
     const totalMarks =
       Math.ceil(classTest1) +
-      Math.ceil(midTerm ) +
+      Math.ceil(midTerm) +
       Math.ceil(classTest2) +
-      Math.ceil(finalTerm );
+      Math.ceil(finalTerm);
 
     const result = calculateGradeAndPoints(totalMarks);
     modifiedData.grade = result.grade;
@@ -234,12 +234,12 @@ const updateEnrolledCourseIntoDB = async (
   return result;
 };
 
-const getAllEnrolledCourseFromDB = async(query:Record<string,unknown>)=>{
-const enrolledCourseQuery = new QueryBuilder(EnrolledCourse.find(), query)
-  .filter()
-  .sort()
-  .paginate()
-  .fields();
+const getAllEnrolledCourseFromDB = async (query: Record<string, unknown>) => {
+  const enrolledCourseQuery = new QueryBuilder(EnrolledCourse.find(), query)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
   const result = await enrolledCourseQuery.modelQuery;
   const meta = await enrolledCourseQuery.countTotal();
@@ -248,9 +248,42 @@ const enrolledCourseQuery = new QueryBuilder(EnrolledCourse.find(), query)
     meta,
     result,
   };
-}
+};
+
+const getMyEnrolledCoursesFromDB = async (
+  studentId: string,
+  query: Record<string, unknown>
+) => {
+  console.log(studentId);
+  const student = await Student.findOne({ id: studentId });
+
+  if (!student) {
+    throw new AppError(httpStatus.NOT_FOUND, "Student not found !");
+  }
+
+  const enrolledCourseQuery = new QueryBuilder(
+    EnrolledCourse.find({ student: student._id }).populate(
+      "semesterRegistration academicSemester academicFaculty academicDepartment offeredCourse course student faculty"
+    ),
+    query
+  )
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await enrolledCourseQuery.modelQuery;
+  const meta = await enrolledCourseQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
+};
+
 export const EnrolledCourseServices = {
   createEnrolledCourseIntoDB,
   updateEnrolledCourseIntoDB,
   getAllEnrolledCourseFromDB,
+  getMyEnrolledCoursesFromDB,
 };

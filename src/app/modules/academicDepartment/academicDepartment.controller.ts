@@ -27,6 +27,7 @@ const getAllAcademicDepartments = catchAsync(async (req, res) => {
     data: result.result,
   });
 });
+
 const getSingleAcademicDepartment = catchAsync(async (req, res) => {
   const { departmentId } = req.params;
   const result =
@@ -41,6 +42,7 @@ const getSingleAcademicDepartment = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
 const updateSingleAcademicDepartment = catchAsync(async (req, res) => {
   const { departmentId } = req.params;
   const result =

@@ -53,7 +53,7 @@ const getMyOfferedCoursesFromDB = async (
 
   const aggregationQuery = [
     {
-      /* match semester */
+      /* match semester  based on ongoing sem,student,depart*/
       $match: {
         semesterRegistration: currentOngoingRegestrationSemester?._id,
         academicFaculty: student?.academicFaculty,
@@ -61,6 +61,7 @@ const getMyOfferedCoursesFromDB = async (
       },
     },
     {
+      /* joins OfferedCourse collection with courses collection to get course details */
       $lookup: {
         from: "courses",
         localField: "course",
@@ -69,9 +70,11 @@ const getMyOfferedCoursesFromDB = async (
       },
     },
     {
+      /* deconstructs the course array and create document for each element */
       $unwind: "$course",
     },
     {
+      /* find all enrolled courses for a specific student in a particular semester */
       $lookup: {
         from: "enrolledcourses",
         let: {
@@ -81,6 +84,7 @@ const getMyOfferedCoursesFromDB = async (
         },
         pipeline: [
           {
+            /*filters documents in the "enrolledcourses"  */
             $match: {
               $expr: {
                 $and: [
@@ -128,6 +132,7 @@ const getMyOfferedCoursesFromDB = async (
       },
     },
     {
+      /* course IDs that the student has completed */
       $addFields: {
         completedCourseIds: {
           $map: {

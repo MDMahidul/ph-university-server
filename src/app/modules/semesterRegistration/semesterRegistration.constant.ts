@@ -5,3 +5,5 @@ export const RegistrationStatus = {
   ONGOING: "ONGOING",
   ENDED: "ENDED",
 } as const;
+
+export const resgisterSemesterSearchableFields = ["status"];

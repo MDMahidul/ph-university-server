@@ -2,7 +2,7 @@ import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
 import { User } from "../User/user.model";
 import { TLoginUser } from "./auth.interface";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import { JwtPayload } from "jsonwebtoken";
 import config from "../../config";
 import bcrypt from "bcrypt";
 import { createToken, verifyToken } from "./auth.utils";
@@ -199,7 +199,7 @@ const forgetPassword = async (userId: string) => {
 
   sendEmail(user.email, resetUILink);
 
-  console.log(resetUILink);
+ // console.log(resetUILink);
 };
 
 const resetPassword = async (

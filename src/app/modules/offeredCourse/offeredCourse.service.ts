@@ -12,7 +12,12 @@ import QueryBuilder from "../../builder/QueryBuilder";
 import { Student } from "../Student/student.model";
 
 const getAllOfferedCoursesFromDB = async (query: Record<string, unknown>) => {
-  const offeredCourseQuery = new QueryBuilder(OfferedCourse.find(), query)
+  const offeredCourseQuery = new QueryBuilder(
+    OfferedCourse.find().populate(
+      "academicSemester academicFaculty academicDepartment course faculty"
+    ),
+    query
+  )
     .filter()
     .sort()
     .paginate()
@@ -187,7 +192,10 @@ const getMyOfferedCoursesFromDB = async (
     },
   ];
 
-  const result = await OfferedCourse.aggregate([...aggregationQuery,...paginationQuery]);
+  const result = await OfferedCourse.aggregate([
+    ...aggregationQuery,
+    ...paginationQuery,
+  ]);
 
   const total = (await OfferedCourse.aggregate(aggregationQuery)).length;
   const totalPage = Math.ceil(total / limit);
@@ -196,7 +204,9 @@ const getMyOfferedCoursesFromDB = async (
 };
 
 const getSingleOfferedCourseFromDB = async (id: string) => {
-  const offeredCourse = await OfferedCourse.findById(id);
+  const offeredCourse = await OfferedCourse.findById(id).populate(
+    "academicSemester academicFaculty academicDepartment course faculty"
+  );
 
   if (!offeredCourse) {
     throw new AppError(httpStatus.NOT_FOUND, "Offered Course not found");
@@ -343,7 +353,7 @@ const updateOfferedCourseIntoDB = async (
   }
   // get the schedules of the faculties
   const assignedSchedules = await OfferedCourse.find({
-    semesterRegistration,
+    _id:{$ne:id},semesterRegistration,
     faculty,
     days: { $in: days },
   }).select("days startTime endTime");
@@ -364,6 +374,8 @@ const updateOfferedCourseIntoDB = async (
   const result = await OfferedCourse.findByIdAndUpdate(id, payload, {
     new: true,
   });
+
+  return result;
 };
 
 const deleteOfferedCourseFromDB = async (id: string) => {

@@ -20,7 +20,7 @@ const createStudent = catchAsync(async (req, res) => {
     data: result,
   });
 });
-
+ 
 const createFaculty: RequestHandler = catchAsync(async (req, res) => {
   const { password, faculty: facultyData } = req.body;
 

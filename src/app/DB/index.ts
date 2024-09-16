@@ -11,7 +11,7 @@ const superUser = {
   status: "in-progress",
   isDeleted: false,
 };
-
+ 
 const seedSuperAdmin = async () => {
   /* when db is connected, we will check is there any user, who is super admin */
 

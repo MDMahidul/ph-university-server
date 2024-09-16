@@ -203,8 +203,7 @@ const updateEnrolledCourseIntoDB = async (
   const modifiedData: Record<string, unknown> = { ...courseMarks };
 
   if (courseMarks?.finalTerm) {
-    const { classTest1, classTest2, midTerm, finalTerm } =
-      isCourseBelongsToFaculty.courseMarks;
+    const { classTest1, classTest2, midTerm, finalTerm } =courseMarks;
 
     const totalMarks =
       Math.ceil(classTest1) +
@@ -235,7 +234,15 @@ const updateEnrolledCourseIntoDB = async (
 };
 
 const getAllEnrolledCourseFromDB = async (query: Record<string, unknown>) => {
-  const enrolledCourseQuery = new QueryBuilder(EnrolledCourse.find(), query)
+  const enrolledCourseQuery = new QueryBuilder(
+    EnrolledCourse.find()
+      .populate("academicSemester")
+      .populate("course")
+      .populate("semesterRegistration")
+      .populate("student")
+      .populate("faculty"),
+    query
+  )
     .filter()
     .sort()
     .paginate()
@@ -254,7 +261,7 @@ const getMyEnrolledCoursesFromDB = async (
   studentId: string,
   query: Record<string, unknown>
 ) => {
-  console.log(studentId);
+  //console.log(studentId);
   const student = await Student.findOne({ id: studentId });
 
   if (!student) {

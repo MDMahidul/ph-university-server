@@ -5,7 +5,10 @@ import { SemesterRegistration } from "./semesterRegistration.model";
 import QueryBuilder from "../../builder/QueryBuilder";
 import { AcademicSemester } from "../AcademicSemester/academicSemester.model";
 import AppError from "../../errors/AppError";
-import { RegistrationStatus } from "./semesterRegistration.constant";
+import {
+  RegistrationStatus,
+  resgisterSemesterSearchableFields,
+} from "./semesterRegistration.constant";
 import mongoose from "mongoose";
 import { OfferedCourse } from "../OfferedCourse/offeredCourse.model";
 
@@ -62,6 +65,7 @@ const getAllSemesterRegistrationsFromDB = async (
     SemesterRegistration.find().populate("academicSemester"),
     query
   )
+    .search(resgisterSemesterSearchableFields)
     .filter()
     .sort()
     .paginate()
